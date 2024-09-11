@@ -4,7 +4,7 @@ from pymongo import MongoClient
 
 # Setup MongoDB connection
 client = MongoClient('mongodb://localhost:27017/')
-db = client['school_management']
+db = client.school
 attendance = db['attendance']
 
 class AttendancePage(Frame):
