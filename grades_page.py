@@ -1,6 +1,11 @@
 from tkinter import *
 from tkinter import ttk, messagebox
-from database import grades
+from pymongo import MongoClient
+
+# Setup MongoDB connection
+client = MongoClient('mongodb://localhost:27017/')
+db = client['school_management']
+grades = db['grades']
 
 class GradesPage(Frame):
     def __init__(self, parent):
@@ -11,20 +16,22 @@ class GradesPage(Frame):
     def create_widgets(self):
         self.configure(bg='lightblue') 
 
-        Label(self, text="Add Grades",bg='lightblue').grid(row=0, column=0, padx=10, pady=10)
-        Label(self, text="Student ID:",bg='lightblue').grid(row=1, column=0, padx=10, pady=5)
+        Label(self, text="Add Grades", bg='lightblue').grid(row=0, column=0, padx=10, pady=10)
+        Label(self, text="Student ID:", bg='lightblue').grid(row=1, column=0, padx=10, pady=5)
         self.grade_id = Entry(self)
         self.grade_id.grid(row=1, column=1, padx=10, pady=5)
-        Label(self, text="Subject:",bg='lightblue').grid(row=2, column=0, padx=10, pady=5)
+        Label(self, text="Subject:", bg='lightblue').grid(row=2, column=0, padx=10, pady=5)
         self.subject = Entry(self)
         self.subject.grid(row=2, column=1, padx=10, pady=5)
-        Label(self, text="Grade:",bg='lightblue').grid(row=3, column=0, padx=10, pady=5)
+        Label(self, text="Grade:", bg='lightblue').grid(row=3, column=0, padx=10, pady=5)
         self.grade = Entry(self)
         self.grade.grid(row=3, column=1, padx=10, pady=5)
+
         Button(self, text="Add Grade", command=self.add_grade).grid(row=4, column=0, columnspan=2, pady=10)
         Button(self, text="View Grades", command=self.view_grades_window).grid(row=5, column=0, columnspan=2, pady=10)
         Button(self, text="Update Grade", command=self.update_grades_window).grid(row=6, column=0, columnspan=2, pady=10)
         Button(self, text="Delete Grade", command=self.delete_grades_window).grid(row=7, column=0, columnspan=2, pady=10)
+        Button(self, text="Back", command=self.go_back).grid(row=8, column=0, columnspan=2, pady=10)
 
     def add_grade(self):
         try:
@@ -116,3 +123,12 @@ class GradesPage(Frame):
                 messagebox.showerror("Error", f"An error occurred while deleting grade: {e}")
 
         Button(delete_win, text="Delete Grade", command=delete_grade).grid(row=2, column=1, pady=10)
+
+    def go_back(self):
+        self.destroy()  # Close this page and return to the parent window
+
+# Usage Example:
+# root = Tk()
+# app = GradesPage(root)
+# app.pack(fill=BOTH, expand=True)
+# root.mainloop()

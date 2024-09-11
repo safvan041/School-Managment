@@ -1,6 +1,11 @@
 from tkinter import *
 from tkinter import ttk, messagebox
-from database import attendance
+from pymongo import MongoClient
+
+# Setup MongoDB connection
+client = MongoClient('mongodb://localhost:27017/')
+db = client['school_management']
+attendance = db['attendance']
 
 class AttendancePage(Frame):
     def __init__(self, parent):
@@ -11,18 +16,20 @@ class AttendancePage(Frame):
     def create_widgets(self):
         self.configure(bg='lightblue') 
 
-        Label(self, text="Add Attendance",bg='lightblue').grid(row=0, column=0, padx=10, pady=10)
-        Label(self, text="Student ID:",bg='lightblue').grid(row=1, column=0, padx=10, pady=5)
+        Label(self, text="Add Attendance", bg='lightblue').grid(row=0, column=0, padx=10, pady=10)
+        Label(self, text="Student ID:", bg='lightblue').grid(row=1, column=0, padx=10, pady=5)
         self.attendance_id = Entry(self)
         self.attendance_id.grid(row=1, column=1, padx=10, pady=5)
-        Label(self, text="Date:",bg='lightblue').grid(row=2, column=0, padx=10, pady=5)
+        Label(self, text="Date:", bg='lightblue').grid(row=2, column=0, padx=10, pady=5)
         self.date = Entry(self)
         self.date.grid(row=2, column=1, padx=10, pady=5)
-        Label(self, text="Status:",bg='lightblue').grid(row=3, column=0, padx=10, pady=5)
+        Label(self, text="Status:", bg='lightblue').grid(row=3, column=0, padx=10, pady=5)
         self.status = Entry(self)
         self.status.grid(row=3, column=1, padx=10, pady=5)
+        
         Button(self, text="Add Attendance", command=self.add_attendance).grid(row=4, column=0, columnspan=2, pady=10)
         Button(self, text="View Attendance", command=self.view_attendance_window).grid(row=5, column=0, columnspan=2, pady=10)
+        Button(self, text="Back", command=self.go_back).grid(row=6, column=0, columnspan=2, pady=10)
 
     def add_attendance(self):
         try:
@@ -37,7 +44,6 @@ class AttendancePage(Frame):
             messagebox.showerror("Error", f"An error occurred while adding attendance: {e}")
 
     def view_attendance_window(self):
-        
         view_win = Toplevel(self)
         view_win.title("View Attendance")
         view_win.geometry('600x400')
@@ -54,3 +60,12 @@ class AttendancePage(Frame):
                                                 record.get("status", "N/A")))
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while fetching attendance data: {e}")
+
+    def go_back(self):
+        self.destroy()  # Close this page and return to the parent window
+
+# Usage Example:
+# root = Tk()
+# app = AttendancePage(root)
+# app.pack(fill=BOTH, expand=True)
+# root.mainloop()
